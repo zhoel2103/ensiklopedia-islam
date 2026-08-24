@@ -2,7 +2,7 @@ export type MenuLink = {
   href: string
   title: string
   description: string
-  icon: "quran" | "hadis" | "kitab" | "search" | "ai" | "riwayat" | "info"
+  icon: "quran" | "hadis" | "kitab" | "doa" | "search" | "ai" | "riwayat" | "info"
 }
 
 export const menuUtama: MenuLink[] = [
@@ -23,6 +23,12 @@ export const menuUtama: MenuLink[] = [
     title: "Kitab",
     description: "Kitab klasik karya ulama dengan navigasi antarbab.",
     icon: "kitab",
+  },
+  {
+    href: "/doa",
+    title: "Doa",
+    description: "Kumpulan 227 doa harian Islam lengkap dengan Arab, latin, dan terjemahan.",
+    icon: "doa",
   },
   {
     href: "/tanya-ai",

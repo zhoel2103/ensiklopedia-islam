@@ -32,5 +32,23 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "maskable",
       },
     ],
+    shortcuts: [
+      {
+        name: "Tafsir Al-Qur'an",
+        url: "/tafsir",
+      },
+      {
+        name: "Hadis & Syarah",
+        url: "/hadis",
+      },
+      {
+        name: "Kitab Ulama",
+        url: "/kitab",
+      },
+      {
+        name: "Kumpulan Doa",
+        url: "/doa",
+      },
+    ],
   }
 }

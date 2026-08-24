@@ -15,6 +15,7 @@ const CATEGORIES: { key: "all" | RiwayatCategory; label: string; icon: string }[
   { key: "tafsir", label: "Tafsir", icon: "📖" },
   { key: "hadis", label: "Hadis", icon: "📜" },
   { key: "kitab", label: "Kitab Ulama", icon: "📚" },
+  { key: "doa", label: "Doa Harian", icon: "🤲" },
   { key: "tanya-ai", label: "Tanya AI", icon: "✨" },
 ]
 
@@ -84,6 +85,8 @@ export default function RiwayatPage() {
         return { label: "Hadis & Syarah", icon: "📜", color: "border-amber-700/60 text-amber-300 bg-amber-950/60" }
       case "kitab":
         return { label: "Kitab Ulama", icon: "📚", color: "border-teal-700/60 text-teal-300 bg-teal-950/80" }
+      case "doa":
+        return { label: "Doa Harian", icon: "🤲", color: "border-emerald-600/60 text-emerald-300 bg-emerald-950/80" }
       case "tanya-ai":
         return { label: "Tanya AI", icon: "✨", color: "border-yellow-600/60 text-yellow-300 bg-yellow-950/60" }
       default:
@@ -250,6 +253,12 @@ export default function RiwayatPage() {
                 className="rounded-xl border border-emerald-700/60 bg-[#07241f] px-3.5 py-2 text-xs font-bold text-emerald-200 hover:border-amber-400 hover:text-white transition"
               >
                 📚 Buka Kitab
+              </Link>
+              <Link
+                href="/doa"
+                className="rounded-xl border border-emerald-700/60 bg-[#07241f] px-3.5 py-2 text-xs font-bold text-emerald-200 hover:border-amber-400 hover:text-white transition"
+              >
+                🤲 Buka Doa
               </Link>
               <Link
                 href="/tanya-ai"

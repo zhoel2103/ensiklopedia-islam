@@ -1,6 +1,6 @@
 "use client"
 
-export type RiwayatCategory = "tafsir" | "hadis" | "kitab" | "tanya-ai" | "beranda"
+export type RiwayatCategory = "tafsir" | "hadis" | "kitab" | "doa" | "tanya-ai" | "beranda"
 
 export type RiwayatItem = {
   id: string
