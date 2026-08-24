@@ -76,7 +76,7 @@ export default function TentangClientView() {
       {/* 1. Main Section: Tentang kami & almaktaba.id */}
       <section className="relative overflow-hidden rounded-3xl border border-emerald-800/50 bg-[#061e1a] p-6 sm:p-10 shadow-2xl">
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-amber-400/5 blur-2xl" />
-        
+
         <div className="relative space-y-6">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-400 text-lg font-bold">
@@ -116,16 +116,9 @@ export default function TentangClientView() {
                   rel="noopener noreferrer"
                   className="font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition"
                 >
-                  ahmadsanusi.com
+                  Ahmad Sanusi API
                 </a>
                 . Insya Allah sumbernya lebih terpercaya dan mudah dilacak kembali.
-              </p>
-            </div>
-
-            {/* Card 3: Ucapan Terima Kasih */}
-            <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[#041613] to-emerald-950/30 p-5 sm:p-6 shadow-inner">
-              <p className="text-amber-100/95 leading-relaxed font-medium">
-                Terima kasih sudah menjadikan almaktaba.id teman belajar yang di rahmati Allah.
               </p>
             </div>
           </div>
@@ -182,33 +175,30 @@ export default function TentangClientView() {
               <button
                 type="button"
                 onClick={() => setActiveTab("android")}
-                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition cursor-pointer ${
-                  activeTab === "android"
-                    ? "bg-[#e5a93c] text-slate-950 shadow-md"
-                    : "bg-[#041613] text-emerald-300/80 hover:text-white"
-                }`}
+                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition cursor-pointer ${activeTab === "android"
+                  ? "bg-[#e5a93c] text-slate-950 shadow-md"
+                  : "bg-[#041613] text-emerald-300/80 hover:text-white"
+                  }`}
               >
                 🤖 Android (Chrome)
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("ios")}
-                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition cursor-pointer ${
-                  activeTab === "ios"
-                    ? "bg-[#e5a93c] text-slate-950 shadow-md"
-                    : "bg-[#041613] text-emerald-300/80 hover:text-white"
-                }`}
+                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition cursor-pointer ${activeTab === "ios"
+                  ? "bg-[#e5a93c] text-slate-950 shadow-md"
+                  : "bg-[#041613] text-emerald-300/80 hover:text-white"
+                  }`}
               >
                 🍏 iPhone / iPad (Safari)
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("pc")}
-                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition cursor-pointer ${
-                  activeTab === "pc"
-                    ? "bg-[#e5a93c] text-slate-950 shadow-md"
-                    : "bg-[#041613] text-emerald-300/80 hover:text-white"
-                }`}
+                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition cursor-pointer ${activeTab === "pc"
+                  ? "bg-[#e5a93c] text-slate-950 shadow-md"
+                  : "bg-[#041613] text-emerald-300/80 hover:text-white"
+                  }`}
               >
                 💻 Komputer / Desktop
               </button>
@@ -287,7 +277,7 @@ export default function TentangClientView() {
 
           <div className="rounded-2xl border border-emerald-700/40 bg-[#041613] p-5 sm:p-6 shadow-inner space-y-4">
             <p className="text-sm sm:text-base leading-relaxed text-emerald-100 font-medium">
-              Saran, koreksi, atau kendala saat memakai Hadits.id. Kami akan baca setiap email yang masuk.
+              Saran, koreksi, atau kendala saat memakai almaktaba.id. Kami akan baca setiap email yang masuk.
             </p>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { menuUtama } from "@/lib/mock-data"
 import { getRiwayatList } from "@/lib/riwayat-storage"
@@ -33,100 +34,16 @@ export default function Navbar() {
           href="/"
           className="group flex shrink-0 items-center gap-2.5"
         >
-          {/* Logo: Open Quran on Rehal (Wooden Bookstand) */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-700/60 bg-[#041411] p-1 shadow-md transition group-hover:border-amber-400/80 group-hover:scale-105">
-            <svg
-              className="h-7 w-7"
-              viewBox="0 0 48 48"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Wooden Rehal / Bookstand */}
-              <path
-                d="M10 38L24 28L38 38"
-                stroke="#F59E0B"
-                strokeWidth="3.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M13 30L19 34.5"
-                stroke="#D97706"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-              />
-              <path
-                d="M35 30L29 34.5"
-                stroke="#D97706"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-              />
-              <path
-                d="M16 41L24 35L32 41"
-                stroke="#B45309"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              {/* Open Book / Quran Pages */}
-              <path
-                d="M24 14C21 11.5 15 11.5 8 13.5V29C15 27 21 27 24 29.5C27 27 33 27 40 29V13.5C33 11.5 27 11.5 24 14Z"
-                fill="#FFFFFF"
-                stroke="#059669"
-                strokeWidth="1.2"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M24 14V29.5"
-                stroke="#047857"
-                strokeWidth="1.2"
-              />
-
-              {/* Quran Lines */}
-              <path
-                d="M11 18C15 17 19 17 21 18.5"
-                stroke="#059669"
-                strokeWidth="1"
-                strokeLinecap="round"
-              />
-              <path
-                d="M11 22C15 21 19 21 21 22.5"
-                stroke="#94A3B8"
-                strokeWidth="1"
-                strokeLinecap="round"
-              />
-              <path
-                d="M11 25.5C15 24.5 19 24.5 21 26"
-                stroke="#94A3B8"
-                strokeWidth="1"
-                strokeLinecap="round"
-              />
-              <path
-                d="M37 18C33 17 29 17 27 18.5"
-                stroke="#059669"
-                strokeWidth="1"
-                strokeLinecap="round"
-              />
-              <path
-                d="M37 22C33 21 29 21 27 22.5"
-                stroke="#94A3B8"
-                strokeWidth="1"
-                strokeLinecap="round"
-              />
-              <path
-                d="M37 25.5C33 24.5 29 24.5 27 26"
-                stroke="#94A3B8"
-                strokeWidth="1"
-                strokeLinecap="round"
-              />
-
-              {/* Bookmark Ribbon */}
-              <path
-                d="M24 14V23L22.5 21.5L21 23V14"
-                fill="#10B981"
-              />
-            </svg>
+          {/* Logo Application */}
+          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-emerald-700/60 bg-[#041411] shadow-md transition group-hover:border-amber-400/80 group-hover:scale-105">
+            <Image
+              src="/icon.png"
+              alt="Logo ALMAKTABA"
+              width={36}
+              height={36}
+              className="h-full w-full object-cover"
+              priority
+            />
           </div>
 
           {/* Symmetrical Brand Title & Sub-Title */}

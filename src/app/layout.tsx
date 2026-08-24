@@ -31,6 +31,13 @@ export const metadata: Metadata = {
   title: "ALMAKTABA — Ensiklopedia Islam",
   description:
     "Satu tempat untuk membaca tafsir Al-Qur'an, hadis beserta syarah, dan kitab ulama klasik.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
