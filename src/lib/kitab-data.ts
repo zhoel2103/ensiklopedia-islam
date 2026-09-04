@@ -29,6 +29,29 @@ export const allKitabRegistry: KitabItem[] = [
 ]
 
 export function getKitab(id: string): KitabItem | undefined {
+  const kutub = KUTUBUS_SITTAH_KITAB_DATA.find((k) => k.id === id)
+  if (kutub) return kutub
+
+  if (typeof window === "undefined") {
+    try {
+      /* eslint-disable @typescript-eslint/no-require-imports */
+      const fs = require("fs")
+      const path = require("path")
+      const filePath = path.join(
+        process.cwd(),
+        "public",
+        "data",
+        "kitab",
+        `${id}.json`,
+      )
+      if (fs.existsSync(filePath)) {
+        return JSON.parse(fs.readFileSync(filePath, "utf-8")) as KitabItem
+      }
+    } catch {
+      // Graceful fallback for non-node environments
+    }
+  }
+
   return allKitabRegistry.find((k) => k.id === id)
 }
 

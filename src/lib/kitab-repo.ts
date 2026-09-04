@@ -5,6 +5,7 @@ import { fetchKitabList, fetchKitabDetail } from "@/lib/ahmad-sanusi"
 import {
   kitabList as fallbackKitabList,
   allKitabRegistry,
+  getKitab,
   type KitabItem,
 } from "@/lib/kitab-data"
 
@@ -77,7 +78,7 @@ export async function getKitabListFromDb(): Promise<KitabItem[]> {
 export async function getKitabDetailFromDb(
   id: string,
 ): Promise<KitabItem | null> {
-  const fallback = allKitabRegistry.find((k) => k.id === id)
+  const fallback = getKitab(id)
   if (fallback) {
     return fallback
   }

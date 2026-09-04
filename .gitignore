@@ -24,6 +24,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Large raw sync caches
+scripts/*.json
+
+
 # env
 .env
 .env*.local

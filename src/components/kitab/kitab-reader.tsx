@@ -8,7 +8,7 @@ import {
   type ParsedBabItem,
   type ParsedHadisCard,
 } from "@/lib/kitab-metadata"
-import type { KitabItem } from "@/lib/kitab-data"
+import type { KitabItem, KitabBab } from "@/lib/kitab-data"
 import SimpanRiwayatButton from "@/components/simpan-riwayat-button"
 
 type KitabReaderProps = {
@@ -23,22 +23,46 @@ export default function KitabReader({
   prevKitab,
   nextKitab,
 }: KitabReaderProps) {
+  const [activeBab, setActiveBab] = useState<KitabBab[]>(kitab.bab)
+
+  useEffect(() => {
+    // If chapters don't have text yet (e.g. lightweight SSR bundle), fetch full static JSON from CDN
+    const needsFetch = kitab.bab.length > 0 && !kitab.bab[0]?.teks
+    if (needsFetch) {
+      fetch(`/data/kitab/${kitab.id}.json`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch kitab data")
+          return res.json()
+        })
+        .then((fullKitab: KitabItem) => {
+          if (fullKitab?.bab && fullKitab.bab.length > 0) {
+            setActiveBab(fullKitab.bab)
+          }
+        })
+        .catch((err) => {
+          console.warn("[KitabReader] Static book fetch:", err)
+        })
+    } else {
+      setActiveBab(kitab.bab)
+    }
+  }, [kitab])
+
   const metadata = useMemo(
     () =>
       getKitabMetadata(
         kitab.id,
         kitab.judul,
         kitab.ulama,
-        kitab.bab.length,
+        activeBab.length || kitab.bab.length,
       ),
-    [kitab],
+    [kitab, activeBab],
   )
 
   const parsedList = useMemo<ParsedBabItem[]>(() => {
-    return kitab.bab.map((b) =>
+    return activeBab.map((b) =>
       parseBabContent(b.nomor, b.judul, b.teks, kitab.id),
     )
-  }, [kitab])
+  }, [activeBab, kitab.id])
 
   const [selectedBab, setSelectedBab] = useState<number>(
     parsedList[0]?.nomor ?? 1,
