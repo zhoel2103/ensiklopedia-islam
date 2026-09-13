@@ -101,5 +101,26 @@ export async function getAyatSpecific(surahNum: number, ayatNum: number): Promis
   } catch (error) {
     console.error("Error fetching specific ayah from DB:", error)
   }
+
+  // Fallback to public API
+  try {
+    const { fetchSurahFromPublicApi } = await import("./tafsir-repo")
+    const publicSurah = await fetchSurahFromPublicApi(surahNum, `surah-${surahNum}`)
+    if (publicSurah && publicSurah.ayat) {
+      const publicAyat = publicSurah.ayat.find(a => a.nomor === ayatNum)
+      if (publicAyat) {
+        return {
+          surahId: surahNum,
+          ayatId: ayatNum,
+          arab: publicAyat.arab,
+          indo: publicAyat.terjemah,
+          audio: `https://everyayah.com/data/Alafasy_128kbps/${padZero(surahNum)}${padZero(ayatNum)}.mp3`
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Error fetching specific ayah from public API:", err)
+  }
+
   return null
 }

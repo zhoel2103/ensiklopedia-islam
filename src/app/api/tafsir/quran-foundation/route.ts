@@ -56,10 +56,8 @@ export async function POST(req: Request) {
       translatedHtml = text
     } catch (err) {
       console.error("Error translating tafsir:", err)
-      return NextResponse.json(
-        { error: "Gagal menerjemahkan teks tafsir" },
-        { status: 500 }
-      )
+      // Fallback to original text with a warning note
+      translatedHtml = `<div class="mb-4 text-emerald-400 text-sm border border-emerald-900/50 bg-[#03100e] p-3 rounded-lg"><em>Catatan: Gagal menerjemahkan teks ke Bahasa Indonesia karena limitasi API publik. Menampilkan teks asli.</em></div>${combinedTafsirHtml}`
     }
 
     return NextResponse.json({
