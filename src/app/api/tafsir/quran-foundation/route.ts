@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { translate } from "@vitalets/google-translate-api"
 
 export async function POST(req: Request) {
   try {
@@ -49,20 +48,42 @@ export async function POST(req: Request) {
       )
     }
 
-    // Translate to Indonesian
     let translatedHtml = combinedTafsirHtml
     try {
-      const { text } = await translate(combinedTafsirHtml, { to: "id" })
-      translatedHtml = text
+      // Split text into safe chunks for GET request to avoid 414 URI Too Long
+      // We'll split by div or br tags if possible, or just raw length
+      const chunks = combinedTafsirHtml.match(/.{1,1500}/gs) || []
+      let translated = ""
+      
+      for (const chunk of chunks) {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=id&dt=t&q=${encodeURIComponent(chunk)}`
+        const res = await fetch(url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+          }
+        })
+        
+        if (!res.ok) {
+          throw new Error(`Google API returned ${res.status}`)
+        }
+        
+        const data = await res.json()
+        if (data && data[0]) {
+          translated += data[0].map((s: any) => s[0]).join('')
+        } else {
+          translated += chunk
+        }
+      }
+      
+      translatedHtml = translated
     } catch (err) {
-      console.error("Error translating tafsir:", err)
-      // Fallback to original text with a warning note
-      translatedHtml = `<div class="mb-4 text-emerald-400 text-sm border border-emerald-900/50 bg-[#03100e] p-3 rounded-lg"><em>Catatan: Gagal menerjemahkan teks ke Bahasa Indonesia karena limitasi API publik. Menampilkan teks asli.</em></div>${combinedTafsirHtml}`
+      console.error("Error translating tafsir with fallback:", err)
+      translatedHtml = `<div class="mb-4 text-emerald-400 text-sm border border-emerald-900/50 bg-[#03100e] p-3 rounded-lg"><em>Catatan: Gagal menerjemahkan teks ke Bahasa Indonesia karena limitasi API publik (diblokir oleh penyedia layanan terjemahan). Menampilkan teks asli.</em></div>${combinedTafsirHtml}`
     }
 
     return NextResponse.json({
       summary: translatedHtml,
-      provider: "quran.foundation + Google Translate",
+      provider: "quran.foundation + API Terjemahan Alternatif",
     })
   } catch (err) {
     console.error("quran.foundation API Error:", err)
