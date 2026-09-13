@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     try {
       // Split text into safe chunks for GET request to avoid 414 URI Too Long
       // We'll split by div or br tags if possible, or just raw length
-      const chunks = combinedTafsirHtml.match(/.{1,1500}/gs) || []
+      const chunks = combinedTafsirHtml.match(/[\s\S]{1,1500}/g) || []
       let translated = ""
       
       for (const chunk of chunks) {
