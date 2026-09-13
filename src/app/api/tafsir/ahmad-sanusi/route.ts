@@ -47,6 +47,7 @@ export async function POST(req: Request) {
           if (sourceId === "tahlili" && tafsirData.tahlili) teksTafsir = tafsirData.tahlili
           else if (sourceId === "jalalayn" && tafsirData.jalalayn) teksTafsir = tafsirData.jalalayn
           else if (sourceId === "wajiz" && tafsirData.wajiz) teksTafsir = tafsirData.wajiz
+          else if (sourceId === "quraish" && tafsirData.quraish) teksTafsir = tafsirData.quraish
         }
         
         // 2. Fallback to EQuran for Tahlili if Ahmad Sanusi failed (blocked/missing key)

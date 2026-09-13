@@ -37,6 +37,11 @@ const TAFSIR_SOURCES = [
     id: "assadi",
     name: "Tafsir as-Sa'di",
     desc: "Tafsir as-Sa'di (via QuranEnc)",
+  },
+  {
+    id: "quraish",
+    name: "Tafsir Quraish Shihab",
+    desc: "Tafsir Al-Mishbah karya Prof. Dr. M. Quraish Shihab",
   }
 ]
 
