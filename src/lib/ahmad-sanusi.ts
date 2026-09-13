@@ -1,5 +1,3 @@
-const BASE_URL = process.env.AHMAD_SANUSI_API_URL ?? "https://api.ahmadsanusi.com/v1"
-const API_KEY = process.env.AHMAD_SANUSI_API_KEY
 
 export type ApiSurah = {
   id: number
@@ -29,7 +27,7 @@ export type ApiAyat = {
 
 type ApiAyatBase = Omit<ApiAyat, "tafsir_wajiz">
 
-type ApiTafsir = {
+export type ApiTafsir = {
   wajiz?: string | null
   tahlili?: string | null
   jalalayn?: string | null
@@ -37,10 +35,14 @@ type ApiTafsir = {
 }
 
 async function apiGet<T>(path: string): Promise<T | null> {
-  if (!API_KEY) return null
+  const apiKey = process.env.AHMAD_SANUSI_API_KEY
+  const baseUrl = process.env.AHMAD_SANUSI_API_URL ?? "https://api.ahmadsanusi.com/v1"
+  
+  if (!apiKey) return null
+  
   try {
-    const res = await fetch(`${BASE_URL}${path}`, {
-      headers: { "X-API-Key": API_KEY },
+    const res = await fetch(`${baseUrl}${path}`, {
+      headers: { "X-API-Key": apiKey },
       cache: "no-store",
     })
     if (!res.ok) return null
@@ -52,7 +54,7 @@ async function apiGet<T>(path: string): Promise<T | null> {
 }
 
 export function isApiConfigured(): boolean {
-  return Boolean(API_KEY)
+  return Boolean(process.env.AHMAD_SANUSI_API_KEY)
 }
 
 export async function fetchSurahList(): Promise<ApiSurah[] | null> {
