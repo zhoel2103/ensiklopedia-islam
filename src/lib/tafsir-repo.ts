@@ -80,7 +80,33 @@ export async function fetchSurahFromPublicApi(
   const arti = meta?.arti || ""
   const jumlahAyat = meta?.jumlahAyat || 0
 
-  // 1. Try EQuran API v2 (Indonesian Kemenag Standard, fast & no auth required)
+  // 1. Try Ahmad Sanusi API (Kemenag Standard) if configured
+  if (isApiConfigured()) {
+    try {
+      const apiAyats = await fetchSurahAyat(surahNomor)
+      if (apiAyats && apiAyats.length > 0) {
+        return {
+          nomor: surahNomor,
+          id: surahSlug,
+          nama: namaArab,
+          namaLatin,
+          arti,
+          jumlahAyat: apiAyats.length,
+          ayat: apiAyats.map((a) => ({
+            nomor: a.ayah_number,
+            arab: a.arabic,
+            terjemah: a.translation_id,
+            juz: a.juz,
+            tafsir: a.tafsir_wajiz ?? "",
+          })),
+        }
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  // 2. Try EQuran API v2 (Indonesian Kemenag Standard, fast & no auth required)
   try {
     const res = await fetch(`https://equran.id/api/v2/surat/${surahNomor}`, {
       headers: { "User-Agent": "EnsiklopediaIslam/1.0" },
@@ -111,7 +137,7 @@ export async function fetchSurahFromPublicApi(
     // Ignore and proceed to next source
   }
 
-  // 2. Try AlQuran Cloud (Global CDN, 0 auth required)
+  // 3. Try AlQuran Cloud (Global CDN, 0 auth required)
   try {
     const res = await fetch(
       `https://api.alquran.cloud/v1/surah/${surahNomor}/editions/quran-uthmani,id.indonesian`,
@@ -142,32 +168,6 @@ export async function fetchSurahFromPublicApi(
     }
   } catch {
     // Ignore
-  }
-
-  // 3. Try Ahmad Sanusi API if configured
-  if (isApiConfigured()) {
-    try {
-      const apiAyats = await fetchSurahAyat(surahNomor)
-      if (apiAyats && apiAyats.length > 0) {
-        return {
-          nomor: surahNomor,
-          id: surahSlug,
-          nama: namaArab,
-          namaLatin,
-          arti,
-          jumlahAyat: apiAyats.length,
-          ayat: apiAyats.map((a) => ({
-            nomor: a.ayah_number,
-            arab: a.arabic,
-            terjemah: a.translation_id,
-            juz: a.juz,
-            tafsir: a.tafsir_wajiz ?? "",
-          })),
-        }
-      }
-    } catch {
-      // Ignore
-    }
   }
 
   // 4. Fallback to local hardcoded mock data
