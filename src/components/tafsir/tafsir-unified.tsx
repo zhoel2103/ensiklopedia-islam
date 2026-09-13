@@ -14,55 +14,20 @@ type AyatData = {
 
 const TAFSIR_SOURCES = [
   {
-    id: "ar.jalalayn",
+    id: "tahlili",
+    name: "Tafsir Kemenag (Tahlili)",
+    desc: "Tafsir komprehensif resmi dari Kementerian Agama RI",
+  },
+  {
+    id: "jalalayn",
     name: "Tafsir al-Jalalayn",
-    desc: "Tafsir ringkas dari Jalaluddin al-Mahalli dan Jalaluddin as-Suyuthi",
+    desc: "Tafsir ringkas klasik karya Jalaluddin al-Mahalli dan Jalaluddin as-Suyuthi",
   },
   {
-    id: "169",
-    name: "Tafsir Ibnu Katsir",
-    desc: "Tafsir ringkas dari Imam Ibnu Katsir",
-  },
-  {
-    id: "168",
-    name: "Tafsir Maarif-ul-Qur'an",
-    desc: "Karya Mufti Muhammad Shafi",
-  },
-  {
-    id: "817",
-    name: "Tafsir Tazkirul Qur'an",
-    desc: "Karya Maulana Wahiduddin Khan",
-  },
-  {
-    id: "91",
-    name: "Tafsir As-Sa'di",
-    desc: "Taisirul Karimir Rahman fi Tafsir Kalamil Mannan",
-  },
-  {
-    id: "16",
-    name: "Tafsir Al-Muyassar",
-    desc: "Tafsir ringkas dari Lembaga Percetakan Al-Qur'an Madinah",
-  },
-  {
-    id: "15",
-    name: "Tafsir Al-Tabari",
-    desc: "Tafsir klasik Imam Ath-Thabari",
-  },
-  {
-    id: "93",
-    name: "Al-Tafsir al-Wasit",
-    desc: "Tafsir karya Syekh Muhammad Sayyid Tantawi",
-  },
-  {
-    id: "90",
-    name: "Tafsir Al-Qurtubi",
-    desc: "Al-Jami' li Ahkam al-Qur'an karya Imam Al-Qurtubi",
-  },
-  {
-    id: "94",
-    name: "Tafseer Al-Baghawi",
-    desc: "Ma'alim at-Tanzil karya Imam Al-Baghawi",
-  },
+    id: "wajiz",
+    name: "Tafsir Kemenag (Wajiz)",
+    desc: "Tafsir ringkas dan padat dari Kementerian Agama RI",
+  }
 ]
 
 type TafsirUnifiedProps = {
@@ -325,7 +290,7 @@ export default function TafsirUnified({
     setTafsirProvider(null)
 
     try {
-      const res = await fetch("/api/tafsir/quran-foundation", {
+      const res = await fetch("/api/tafsir/ahmad-sanusi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
