@@ -1,6 +1,3 @@
-import { drizzle } from "drizzle-orm/better-sqlite3"
-import { migrate } from "drizzle-orm/better-sqlite3/migrator"
-import Database from "better-sqlite3"
 import * as schema from "./schema"
 
 const globalForDb = globalThis as unknown as {
@@ -9,6 +6,13 @@ const globalForDb = globalThis as unknown as {
 
 function init() {
   try {
+    if (typeof process === 'undefined' || (process as any).release?.name !== 'node') {
+      return null;
+    }
+    const Database = require("better-sqlite3")
+    const { drizzle } = require("drizzle-orm/better-sqlite3")
+    const { migrate } = require("drizzle-orm/better-sqlite3/migrator")
+
     const dbPath = process.env.DATABASE_PATH ?? "ensiklopedi.db"
     const sqlite = new Database(dbPath, { fileMustExist: false })
     const drizzleDb = drizzle(sqlite, { schema })
