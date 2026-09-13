@@ -27,6 +27,16 @@ const TAFSIR_SOURCES = [
     id: "wajiz",
     name: "Tafsir Kemenag (Wajiz)",
     desc: "Tafsir ringkas dan padat dari Kementerian Agama RI",
+  },
+  {
+    id: "almukhtashar",
+    name: "Al-Mukhtaṣar fī Tafsīr",
+    desc: "Tafsir ringkas Al-Qur'an al-Karim (via QuranEnc)",
+  },
+  {
+    id: "assadi",
+    name: "Tafsir as-Sa'di",
+    desc: "Tafsir as-Sa'di (via QuranEnc)",
   }
 ]
 

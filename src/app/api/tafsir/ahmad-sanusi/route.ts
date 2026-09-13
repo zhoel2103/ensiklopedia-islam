@@ -14,37 +14,60 @@ export async function POST(req: Request) {
 
     let combinedTafsirHtml = ""
     let equranTafsirData: any = null
+    let providerName = "Ahmad Sanusi API (Kemenag RI)"
+
+    if (sourceId === "almukhtashar" || sourceId === "assadi") {
+      providerName = "QuranEnc API"
+    }
 
     // Iterate through requested ayahs
     for (let ayatNum = start; ayatNum <= end; ayatNum++) {
       let teksTafsir = ""
       
-      // 1. Try Ahmad Sanusi API first
-      const tafsirData = await fetchTafsir(surahNomor, ayatNum)
-      if (tafsirData) {
-        if (sourceId === "tahlili" && tafsirData.tahlili) teksTafsir = tafsirData.tahlili
-        else if (sourceId === "jalalayn" && tafsirData.jalalayn) teksTafsir = tafsirData.jalalayn
-        else if (sourceId === "wajiz" && tafsirData.wajiz) teksTafsir = tafsirData.wajiz
-      }
-      
-      // 2. Fallback to EQuran for Tahlili if Ahmad Sanusi failed (blocked/missing key)
-      if (!teksTafsir && sourceId === "tahlili") {
-        if (!equranTafsirData) {
-          try {
-            const res = await fetch(`https://equran.id/api/v2/tafsir/${surahNomor}`)
-            if (res.ok) {
-              const json = await res.json()
-              equranTafsirData = json.data?.tafsir || []
+      if (sourceId === "almukhtashar" || sourceId === "assadi") {
+        const quranencKey = sourceId === "almukhtashar" ? "indonesian_complex" : "indonesian_sabiq"
+        try {
+          const res = await fetch(`https://quranenc.com/api/v1/translation/aya/${quranencKey}/${surahNomor}/${ayatNum}`)
+          if (res.ok) {
+            const data = await res.json()
+            if (data && data.result && data.result.translation) {
+              teksTafsir = data.result.translation
+              if (data.result.footnotes) {
+                teksTafsir += `\n\nCatatan Kaki: ${data.result.footnotes}`
+              }
             }
-          } catch (e) {
-            console.error("Equran fallback error:", e)
           }
+        } catch(e) {
+          console.error("QuranEnc fetch error:", e)
+        }
+      } else {
+        // 1. Try Ahmad Sanusi API first
+        const tafsirData = await fetchTafsir(surahNomor, ayatNum)
+        if (tafsirData) {
+          if (sourceId === "tahlili" && tafsirData.tahlili) teksTafsir = tafsirData.tahlili
+          else if (sourceId === "jalalayn" && tafsirData.jalalayn) teksTafsir = tafsirData.jalalayn
+          else if (sourceId === "wajiz" && tafsirData.wajiz) teksTafsir = tafsirData.wajiz
         }
         
-        if (equranTafsirData && Array.isArray(equranTafsirData)) {
-          const matchedAyat = equranTafsirData.find((a: any) => a.ayat === ayatNum)
-          if (matchedAyat && matchedAyat.teks) {
-            teksTafsir = matchedAyat.teks
+        // 2. Fallback to EQuran for Tahlili if Ahmad Sanusi failed (blocked/missing key)
+        if (!teksTafsir && sourceId === "tahlili") {
+          if (!equranTafsirData) {
+            try {
+              const res = await fetch(`https://equran.id/api/v2/tafsir/${surahNomor}`)
+              if (res.ok) {
+                const json = await res.json()
+                equranTafsirData = json.data?.tafsir || []
+              }
+            } catch (e) {
+              console.error("Equran fallback error:", e)
+            }
+          }
+          
+          if (equranTafsirData && Array.isArray(equranTafsirData)) {
+            const matchedAyat = equranTafsirData.find((a: any) => a.ayat === ayatNum)
+            if (matchedAyat && matchedAyat.teks) {
+              teksTafsir = matchedAyat.teks
+            }
           }
         }
       }
@@ -63,7 +86,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       summary: combinedTafsirHtml,
-      provider: "Ahmad Sanusi API (Kemenag RI)",
+      provider: providerName,
     })
   } catch (err) {
     console.error("Ahmad Sanusi API Error:", err)
