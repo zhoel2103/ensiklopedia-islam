@@ -28,12 +28,7 @@ export default function TafsirReader({
   const [bookmarks, setBookmarks] = useState<Record<number, boolean>>({})
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
-  // Modals
-  const [aiModalAyat, setAiModalAyat] = useState<AyatTafsir | null>(null)
   const [cardModalAyat, setCardModalAyat] = useState<AyatTafsir | null>(null)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [aiResponse, setAiResponse] = useState<string | null>(null)
-  const [userAiQuestion, setUserAiQuestion] = useState("")
 
   const toastTimerRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -124,55 +119,6 @@ export default function TafsirReader({
     }
   }
 
-  // AI Tadabbur Modal
-  const openAiModal = async (ayat: AyatTafsir) => {
-    setAiModalAyat(ayat)
-    setAiLoading(true)
-    setAiResponse(null)
-    setUserAiQuestion("")
-
-    const promptText = `Tolong berikan penjelasan mendalam seputar Asbabun Nuzul, makna kosa kata (mufradat), tafsir ringkas, serta faidah tadabbur dan amalan praktis dari QS. ${surah.namaLatin} Ayat ${ayat.nomor}:\n\nArab: "${ayat.arab}"\nTerjemah: "${ayat.terjemah}"\nTafsir Kemenag: "${ayat.tafsir}"`
-
-    try {
-      const res = await fetch("/api/tanya-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q: promptText }),
-      })
-      if (res.ok) {
-        const json = await res.json()
-        setAiResponse(json.jawaban || json.answer || "Penjelasan tafsir berhasil dianalisis.")
-      } else {
-        setAiResponse("Ayat ini mengandung pesan tauhid dan petunjuk hidup bagi umat beriman dalam menjalani kehidupan sehari-hari.")
-      }
-    } catch {
-      setAiResponse("Ayat ini mengandung pesan tauhid dan petunjuk hidup bagi umat beriman dalam menjalani kehidupan sehari-hari.")
-    } finally {
-      setAiLoading(false)
-    }
-  }
-
-  const handleAskFollowUpAi = async () => {
-    if (!userAiQuestion.trim() || !aiModalAyat) return
-    setAiLoading(true)
-    const prompt = `Pertanyaan seputar QS. ${surah.namaLatin} Ayat ${aiModalAyat.nomor}: ${userAiQuestion}`
-    try {
-      const res = await fetch("/api/tanya-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q: prompt }),
-      })
-      if (res.ok) {
-        const json = await res.json()
-        setAiResponse((prev) => `${prev}\n\n**Tanya:** ${userAiQuestion}\n\n**Jawaban AI:**\n${json.jawaban || json.answer}`)
-        setUserAiQuestion("")
-      }
-    } catch {
-      // ignore
-    } finally {
-      setAiLoading(false)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-[#041310] text-emerald-100 pb-20">
@@ -434,17 +380,6 @@ export default function TafsirReader({
 
                 {/* Card Footer Actions */}
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-emerald-800/30 pt-4">
-                  {/* Left AI Button */}
-                  <button
-                    type="button"
-                    onClick={() => openAiModal(ayat)}
-                    className="flex items-center gap-1.5 rounded-xl border border-amber-400/30 bg-[#0c2b23] px-3.5 py-2 text-xs sm:text-sm font-medium text-amber-300 shadow-sm transition hover:bg-[#12382e] active:scale-95 cursor-pointer"
-                  >
-                    <span className="text-amber-400">✨</span>
-                    <span>Tadabbur & AI Tafsir</span>
-                  </button>
-
-                  {/* Right Action Icons */}
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
@@ -587,93 +522,7 @@ export default function TafsirReader({
         </div>
       )}
 
-      {/* AI Modal */}
-      {aiModalAyat && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="relative flex max-h-[90vh] w-full max-w-3xl flex-col rounded-3xl border border-amber-500/40 bg-[#061e1a] shadow-2xl">
-            <div className="flex items-center justify-between border-b border-emerald-800/40 p-5 sm:p-6 bg-gradient-to-r from-emerald-950 to-[#0c2b23]">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400 text-slate-950 shadow-md">
-                  ✨
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white sm:text-lg">
-                    Asisten AI: Tadabbur Ayat
-                  </h3>
-                  <p className="text-xs text-amber-300">
-                    QS. {surah.namaLatin} • Ayat {aiModalAyat.nomor}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setAiModalAyat(null)}
-                className="rounded-full p-2 text-emerald-400 hover:bg-emerald-900/50 hover:text-white cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
 
-            <div className="flex-1 space-y-4 overflow-y-auto p-5 sm:p-6 text-emerald-100">
-              {aiLoading ? (
-                <div className="flex flex-col items-center justify-center py-12 space-y-3">
-                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
-                  <p className="text-xs font-semibold text-amber-300 animate-pulse">
-                    Menganalisis asbabun nuzul &amp; hikmah ayat dengan AI...
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="rounded-2xl border border-emerald-800/40 bg-[#041411] p-5">
-                    <p className="text-sm leading-relaxed text-emerald-100 whitespace-pre-line">
-                      {aiResponse}
-                    </p>
-                  </div>
-
-                  <div className="pt-2">
-                    <label
-                      htmlFor="followup-ai-ayat"
-                      className="mb-1.5 block text-xs font-semibold text-emerald-300"
-                    >
-                      Punya pertanyaan seputar makna ayat ini?
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        id="followup-ai-ayat"
-                        type="text"
-                        placeholder="Contoh: Apa pelajaran yang bisa saya petik untuk ibadah harian?"
-                        value={userAiQuestion}
-                        onChange={(e) => setUserAiQuestion(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") handleAskFollowUpAi()
-                        }}
-                        className="flex-1 rounded-xl border border-emerald-700/50 bg-[#041411] px-3.5 py-2 text-xs sm:text-sm text-emerald-100 placeholder-emerald-700 outline-none focus:border-amber-400"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAskFollowUpAi}
-                        className="rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-slate-950 transition hover:bg-amber-400 cursor-pointer"
-                      >
-                        Tanya
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center justify-end border-t border-emerald-800/40 p-4">
-              <button
-                type="button"
-                onClick={() => setAiModalAyat(null)}
-                className="rounded-xl bg-[#e5a93c] px-5 py-2 text-xs font-bold text-slate-950 transition hover:bg-[#d6982f] cursor-pointer"
-              >
-                Selesai
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Card Modal */}
       {cardModalAyat && (

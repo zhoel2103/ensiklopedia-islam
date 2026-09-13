@@ -16,7 +16,6 @@ const CATEGORIES: { key: "all" | RiwayatCategory; label: string; icon: string }[
   { key: "hadis", label: "Hadis", icon: "📜" },
   { key: "kitab", label: "Kitab Ulama", icon: "📚" },
   { key: "doa", label: "Doa Harian", icon: "🤲" },
-  { key: "tanya-ai", label: "Tanya AI", icon: "✨" },
 ]
 
 export default function RiwayatPage() {
@@ -87,8 +86,6 @@ export default function RiwayatPage() {
         return { label: "Kitab Ulama", icon: "📚", color: "border-teal-700/60 text-teal-300 bg-teal-950/80" }
       case "doa":
         return { label: "Doa Harian", icon: "🤲", color: "border-emerald-600/60 text-emerald-300 bg-emerald-950/80" }
-      case "tanya-ai":
-        return { label: "Tanya AI", icon: "✨", color: "border-yellow-600/60 text-yellow-300 bg-yellow-950/60" }
       default:
         return { label: "Halaman", icon: "📑", color: "border-emerald-700 text-emerald-300 bg-emerald-950" }
     }
@@ -231,7 +228,7 @@ export default function RiwayatPage() {
             <p className="mt-1 text-xs text-emerald-300/70 max-w-md mx-auto leading-relaxed">
               {searchQuery
                 ? `Tidak ada catatan dengan kata kunci "${searchQuery}". Coba kata kunci lain atau bersihkan pencarian.`
-                : "Klik tombol 'Simpan Riwayat' pada halaman Kitab, Tafsir, Hadis, atau Tanya AI untuk menyimpan progress bacaan Anda di sini."}
+                : "Klik tombol 'Simpan Riwayat' pada halaman Kitab, Tafsir, atau Hadis untuk menyimpan progress bacaan Anda di sini."}
             </p>
           </div>
           {!searchQuery && (
@@ -259,12 +256,6 @@ export default function RiwayatPage() {
                 className="rounded-xl border border-emerald-700/60 bg-[#07241f] px-3.5 py-2 text-xs font-bold text-emerald-200 hover:border-amber-400 hover:text-white transition"
               >
                 🤲 Buka Doa
-              </Link>
-              <Link
-                href="/tanya-ai"
-                className="rounded-xl border border-amber-600/60 bg-amber-950/40 px-3.5 py-2 text-xs font-bold text-amber-300 hover:bg-amber-900 transition"
-              >
-                ✨ Tanya AI
               </Link>
             </div>
           )}

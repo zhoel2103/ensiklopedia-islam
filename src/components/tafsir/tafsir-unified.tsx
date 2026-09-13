@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect, useRef } from "react"
 import { SURAH_DETAIL_LIST, type SurahDetailMeta } from "@/lib/tafsir-metadata"
-import { generateComprehensiveTafsir } from "@/lib/tafsir-summary-service"
 import SimpanRiwayatButton from "@/components/simpan-riwayat-button"
 
 type AyatData = {
@@ -15,34 +14,54 @@ type AyatData = {
 
 const TAFSIR_SOURCES = [
   {
-    id: "jalalain",
-    name: "Tafsir Jalalain",
-    desc: "Tafsir ringkas dari Jalaluddin As-Suyuthi",
+    id: "ar.jalalayn",
+    name: "Tafsir al-Jalalayn",
+    desc: "Tafsir ringkas dari Jalaluddin al-Mahalli dan Jalaluddin as-Suyuthi",
   },
   {
-    id: "ibnu-katsir",
-    name: "Tafsir Mukhtasar Ibnu Katsir",
-    desc: "Ringkasan tafsir klasik dari Imam Ibnu Katsir",
+    id: "169",
+    name: "Tafsir Ibnu Katsir",
+    desc: "Tafsir ringkas dari Imam Ibnu Katsir",
   },
   {
-    id: "kemenag",
-    name: "Tafsir Kemenag RI",
-    desc: "Tafsir resmi Kementerian Agama Republik Indonesia",
+    id: "168",
+    name: "Tafsir Maarif-ul-Qur'an",
+    desc: "Karya Mufti Muhammad Shafi",
   },
   {
-    id: "as-sadi",
+    id: "817",
+    name: "Tafsir Tazkirul Qur'an",
+    desc: "Karya Maulana Wahiduddin Khan",
+  },
+  {
+    id: "91",
     name: "Tafsir As-Sa'di",
     desc: "Taisirul Karimir Rahman fi Tafsir Kalamil Mannan",
   },
   {
-    id: "muyassar",
+    id: "16",
     name: "Tafsir Al-Muyassar",
     desc: "Tafsir ringkas dari Lembaga Percetakan Al-Qur'an Madinah",
   },
   {
-    id: "quraish-shihab",
-    name: "Tafsir Quraish Shihab",
-    desc: "Tafsir Al-Misbah karya Prof. Dr. M. Quraish Shihab",
+    id: "15",
+    name: "Tafsir Al-Tabari",
+    desc: "Tafsir klasik Imam Ath-Thabari",
+  },
+  {
+    id: "93",
+    name: "Al-Tafsir al-Wasit",
+    desc: "Tafsir karya Syekh Muhammad Sayyid Tantawi",
+  },
+  {
+    id: "90",
+    name: "Tafsir Al-Qurtubi",
+    desc: "Al-Jami' li Ahkam al-Qur'an karya Imam Al-Qurtubi",
+  },
+  {
+    id: "94",
+    name: "Tafseer Al-Baghawi",
+    desc: "Ma'alim at-Tanzil karya Imam Al-Baghawi",
   },
 ]
 
@@ -306,7 +325,7 @@ export default function TafsirUnified({
     setTafsirProvider(null)
 
     try {
-      const res = await fetch("/api/tafsir/ringkasan", {
+      const res = await fetch("/api/tafsir/quran-foundation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -314,35 +333,19 @@ export default function TafsirUnified({
           start: activeRange.start,
           end: activeRange.end,
           sourceId: selectedTafsirSource,
-          ayats: displayedAyats,
         }),
       })
 
       if (res.ok) {
         const json = await res.json()
         setTafsirSummary(json.summary)
-        setTafsirProvider(json.provider || "Google Gemini")
+        setTafsirProvider(json.provider || "quran.foundation + Google Translate")
       } else {
-        const local = generateComprehensiveTafsir(
-          currentSurah,
-          activeRange.start,
-          activeRange.end,
-          selectedTafsirSource,
-          allAyatList,
-        )
-        setTafsirSummary(local)
-        setTafsirProvider("Ensiklopedia Tafsir Engine")
+        const err = await res.json()
+        showToast(err.error || "Gagal memuat tafsir dari quran.foundation.")
       }
     } catch {
-      const local = generateComprehensiveTafsir(
-        currentSurah,
-        activeRange.start,
-        activeRange.end,
-        selectedTafsirSource,
-        allAyatList,
-      )
-      setTafsirSummary(local)
-      setTafsirProvider("Ensiklopedia Tafsir Engine")
+      showToast("Gagal menghubungi server. Silakan coba lagi.")
     } finally {
       setTafsirLoading(false)
     }
@@ -629,12 +632,12 @@ export default function TafsirUnified({
           {tafsirLoading ? (
             <>
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
-              <span>Menyusun Ringkasan Tafsir...</span>
+              <span>Memuat dan Menerjemahkan Tafsir...</span>
             </>
           ) : (
             <>
-              <span className="text-base">✨</span>
-              <span>Dapatkan Ringkasan Tafsir</span>
+              <span className="text-base">📖</span>
+              <span>Muat Tafsir</span>
             </>
           )}
         </button>
@@ -653,49 +656,10 @@ export default function TafsirUnified({
               </span>
             </div>
 
-            <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-justify text-white">
-              {tafsirSummary.split("\n\n").map((paragraph, idx) => {
-                const trimmed = paragraph.trim()
-                if (!trimmed) return null
-
-                // Check if paragraph is purely a heading (starts with ###)
-                if (trimmed.startsWith("###")) {
-                  return (
-                    <div
-                      key={idx}
-                      className="font-bold text-amber-300 text-sm sm:text-base border-b border-emerald-800/40 pb-1.5 pt-2"
-                    >
-                      {trimmed.replace(/^###\s*/, "")}
-                    </div>
-                  )
-                }
-
-                // Check if paragraph starts with a bold title like **Paragraf 1 - ...**
-                const matchBoldTitle = trimmed.match(/^(\*\*[^*]+\*\*[:\-]?)\s*([\s\S]*)$/)
-                if (matchBoldTitle) {
-                  const titleText = matchBoldTitle[1].replace(/\*\*/g, "")
-                  const bodyText = matchBoldTitle[2]
-                  return (
-                    <div key={idx} className="space-y-1.5">
-                      <div className="font-bold text-amber-300 text-sm sm:text-base">
-                        {titleText}
-                      </div>
-                      {bodyText && (
-                        <p className="leading-relaxed text-white font-normal">
-                          {bodyText}
-                        </p>
-                      )}
-                    </div>
-                  )
-                }
-
-                return (
-                  <p key={idx} className="leading-relaxed text-white font-normal">
-                    {trimmed}
-                  </p>
-                )
-              })}
-            </div>
+            <div 
+              className="space-y-4 text-xs sm:text-sm leading-relaxed text-justify text-white max-h-[50vh] sm:max-h-[60vh] overflow-y-auto pr-2"
+              dangerouslySetInnerHTML={{ __html: tafsirSummary }}
+            />
 
             <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-emerald-900/40 pt-3.5 text-xs text-emerald-400">
               <span className="text-[11px] text-emerald-400 font-medium">

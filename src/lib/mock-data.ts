@@ -7,6 +7,12 @@ export type MenuLink = {
 
 export const menuUtama: MenuLink[] = [
   {
+    href: "/alquran",
+    title: "Al-Qur'an",
+    description: "Baca dan cari ayat dengan pencarian pintar semantik (teks & suara).",
+    icon: "quran",
+  },
+  {
     href: "/tafsir",
     title: "Tafsir",
     description: "Baca ayat dan tafsirnya per surah dan per ayat.",
@@ -30,16 +36,11 @@ export const menuUtama: MenuLink[] = [
     description: "Kumpulan 227 doa harian Islam lengkap dengan Arab, latin, dan terjemahan.",
     icon: "doa",
   },
-  {
-    href: "/tanya-ai",
-    title: "Tanya AI",
-    description: "Tanya jawab seputar Islam dengan rujukan pustaka.",
-    icon: "ai",
-  },
+
   {
     href: "/riwayat",
     title: "Riwayat",
-    description: "Catatan bacaan tafsir, hadis, kitab, dan konsultasi AI yang Anda simpan.",
+    description: "Catatan bacaan tafsir, hadis, dan kitab yang Anda simpan.",
     icon: "riwayat",
   },
   {

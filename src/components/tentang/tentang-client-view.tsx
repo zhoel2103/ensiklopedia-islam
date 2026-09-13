@@ -303,7 +303,7 @@ export default function TentangClientView() {
       </section>
 
       {/* Quick Navigation Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
         <Link
           href="/tafsir"
           className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-emerald-800/40 bg-[#061e1a] p-4 text-center transition hover:-translate-y-1 hover:border-amber-400/50 hover:bg-[#082823] group"
@@ -334,15 +334,6 @@ export default function TentangClientView() {
           </span>
         </Link>
 
-        <Link
-          href="/tanya-ai"
-          className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-emerald-800/40 bg-[#061e1a] p-4 text-center transition hover:-translate-y-1 hover:border-amber-400/50 hover:bg-[#082823] group"
-        >
-          <span className="text-2xl">🤖</span>
-          <span className="text-xs sm:text-sm font-bold text-white group-hover:text-amber-300">
-            Tanya AI
-          </span>
-        </Link>
       </div>
     </div>
   )

@@ -84,6 +84,10 @@ export async function fetchSurahAyat(
   return result
 }
 
+export async function fetchTafsir(surah: number, ayat: number): Promise<ApiTafsir | null> {
+  return apiGet<ApiTafsir>(`/quran/surah/${surah}/ayat/${ayat}/tafsir`)
+}
+
 export type ApiHadisKitab = {
   slug: string
   nama: string

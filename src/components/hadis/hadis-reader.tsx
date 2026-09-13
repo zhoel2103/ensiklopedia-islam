@@ -16,11 +16,7 @@ export default function HadisReader({ hadis, prev, next }: HadisReaderProps) {
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [showQuoteModal, setShowQuoteModal] = useState(false)
 
-  // AI Assistant State
-  const [aiModalOpen, setAiModalOpen] = useState(false)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [aiResponse, setAiResponse] = useState<string | null>(null)
-  const [userAiQuestion, setUserAiQuestion] = useState("")
+
 
   const toastTimerRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -86,67 +82,6 @@ export default function HadisReader({ hadis, prev, next }: HadisReaderProps) {
     }
   }
 
-  // Open AI Explanations
-  const openAiModal = async () => {
-    setAiModalOpen(true)
-    setAiLoading(true)
-    setAiResponse(null)
-    setUserAiQuestion("")
-
-    const promptText = `Tolong berikan penjelasan syarah mendalam, asbabul wurud (sebab turunnya hadis jika ada), kandungan hukum fiqih, serta faidah amalan praktis kehidupan dari hadis berikut:
-HR. ${hadis.perawi} (${hadis.derajat})
-Judul: "${hadis.judul}"
-Matan Arab: "${hadis.arab}"
-Terjemah: "${hadis.terjemah}"
-Syarah dasar: "${hadis.syarah}"`
-
-    try {
-      const res = await fetch("/api/tanya-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q: promptText }),
-      })
-      if (res.ok) {
-        const json = await res.json()
-        setAiResponse(
-          json.jawaban ||
-            json.answer ||
-            "Syarah dan faidah hadis berhasil dianalisis.",
-        )
-      } else {
-        setAiResponse(hadis.syarah)
-      }
-    } catch {
-      setAiResponse(hadis.syarah)
-    } finally {
-      setAiLoading(false)
-    }
-  }
-
-  const handleAskFollowUpAi = async () => {
-    if (!userAiQuestion.trim()) return
-    setAiLoading(true)
-    const prompt = `Pertanyaan seputar hadis HR. ${hadis.perawi} ("${hadis.judul}"): ${userAiQuestion}`
-    try {
-      const res = await fetch("/api/tanya-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q: prompt }),
-      })
-      if (res.ok) {
-        const json = await res.json()
-        setAiResponse(
-          (prev) =>
-            `${prev}\n\n**Tanya:** ${userAiQuestion}\n\n**Jawaban AI:**\n${json.jawaban || json.answer}`,
-        )
-        setUserAiQuestion("")
-      }
-    } catch {
-      // ignore
-    } finally {
-      setAiLoading(false)
-    }
-  }
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-3 py-6 sm:px-6 sm:py-8 text-emerald-100">
@@ -346,14 +281,6 @@ Syarah dasar: "${hadis.syarah}"`
               <span>📖</span>
               <span>Syarah &amp; Penjelasan Hadis</span>
             </span>
-            <button
-              type="button"
-              onClick={openAiModal}
-              className="flex items-center gap-1.5 rounded-xl border border-amber-400/30 bg-[#0c2b23] px-3.5 py-1.5 text-xs font-semibold text-amber-300 transition hover:bg-[#12382e] active:scale-95 cursor-pointer shadow-sm"
-            >
-              <span>✨</span>
-              <span>Tadabbur &amp; AI Syarah</span>
-            </button>
           </div>
           <p className="text-sm leading-relaxed text-emerald-100/90 whitespace-pre-line">
             {hadis.syarah}
@@ -454,93 +381,6 @@ Syarah dasar: "${hadis.syarah}"`
         </div>
       )}
 
-      {/* AI Syarah Modal */}
-      {aiModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="relative flex max-h-[90vh] w-full max-w-3xl flex-col rounded-3xl border border-amber-500/40 bg-[#061e1a] shadow-2xl">
-            <div className="flex items-center justify-between border-b border-emerald-800/40 p-5 sm:p-6 bg-gradient-to-r from-emerald-950 to-[#0c2b23]">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400 text-slate-950 shadow-md">
-                  ✨
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white sm:text-lg">
-                    Asisten AI: Syarah &amp; Faidah Hadis
-                  </h3>
-                  <p className="text-xs text-amber-300">
-                    HR. {hadis.perawi} • {hadis.judul}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setAiModalOpen(false)}
-                className="rounded-full p-2 text-emerald-400 hover:bg-emerald-900/50 hover:text-white cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="flex-1 space-y-4 overflow-y-auto p-5 sm:p-6 text-emerald-100">
-              {aiLoading ? (
-                <div className="flex flex-col items-center justify-center py-12 space-y-3">
-                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
-                  <p className="text-xs font-semibold text-amber-300 animate-pulse">
-                    Menganalisis syarah &amp; faidah hadis dengan AI...
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="rounded-2xl border border-emerald-800/40 bg-[#041411] p-5">
-                    <p className="text-sm leading-relaxed text-emerald-100 whitespace-pre-line">
-                      {aiResponse}
-                    </p>
-                  </div>
-
-                  <div className="pt-2">
-                    <label
-                      htmlFor="followup-ai-hadis"
-                      className="mb-1.5 block text-xs font-semibold text-emerald-300"
-                    >
-                      Punya pertanyaan seputar pengamalan hadis ini?
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        id="followup-ai-hadis"
-                        type="text"
-                        placeholder="Contoh: Bagaimana cara menerapkan hadis ini di lingkungan kerja?"
-                        value={userAiQuestion}
-                        onChange={(e) => setUserAiQuestion(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") handleAskFollowUpAi()
-                        }}
-                        className="flex-1 rounded-xl border border-emerald-700/50 bg-[#041411] px-3.5 py-2 text-xs sm:text-sm text-emerald-100 placeholder-emerald-700 outline-none focus:border-amber-400"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAskFollowUpAi}
-                        className="rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-slate-950 transition hover:bg-amber-400 cursor-pointer"
-                      >
-                        Tanya
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center justify-end border-t border-emerald-800/40 p-4">
-              <button
-                type="button"
-                onClick={() => setAiModalOpen(false)}
-                className="rounded-xl bg-[#e5a93c] px-5 py-2 text-xs font-bold text-slate-950 transition hover:bg-[#d6982f] cursor-pointer"
-              >
-                Selesai
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Floating Toast */}
       {toastMessage && (
