@@ -44,20 +44,13 @@ export async function searchAyatSemantik(query: string): Promise<AyatDetail[]> {
           let indoTranslation = r.translatedText
           
           try {
-            // Fetch authentic Indonesian translation from local database
-            const surahSlug = `surah-${s}`
-            const localAyat = await db.select().from(ayat).where(
-              and(
-                eq(ayat.surahId, surahSlug),
-                eq(ayat.nomor, a)
-              )
-            ).limit(1)
-            
-            if (localAyat && localAyat.length > 0) {
-              indoTranslation = localAyat[0].terjemah
+            // Fetch authentic Indonesian translation from local database or fallback public API
+            const specificAyat = await getAyatSpecific(s, a)
+            if (specificAyat && specificAyat.indo) {
+              indoTranslation = specificAyat.indo
             }
           } catch(e) {
-            console.error("Local DB fetch error:", e)
+            console.error("Local/Fallback fetch error:", e)
           }
 
           ayats.push({
