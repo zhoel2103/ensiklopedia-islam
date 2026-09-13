@@ -38,7 +38,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "ALMAKTABA — Ensiklopedia Islam",
   description:
-    "Satu tempat untuk membaca tafsir Al-Qur'an, hadis beserta syarah, kitab ulama klasik, dan kumpulan doa harian offline.",
+    "Satu tempat untuk membaca Al-Qur'an, Tafsir, Hadis beserta syarah, kitab ulama klasik, dan kumpulan doa harian.",
   manifest: "/manifest.webmanifest",
   applicationName: "ALMAKTABA",
   appleWebApp: {
